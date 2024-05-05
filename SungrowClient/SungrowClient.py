@@ -440,7 +440,7 @@ class SungrowClient():
         try:
             if self.latest_scrape.get('start_stop'):
                 logging.debug(f"start_stop:{self.latest_scrape.get('start_stop', 'null')} work_state_1:{self.latest_scrape.get('work_state_1', 'null')}")    
-                if self.latest_scrape.get('start_stop', False) == 'Start' and self.latest_scrape.get('work_state_1', False).contains('Run'):
+                if self.latest_scrape.get('start_stop', False) == 'Start' and 'Run' in self.latest_scrape.get('work_state_1', ''):
                     self.latest_scrape["run_state"] = "ON"
                 else:
                     self.latest_scrape["run_state"] = "OFF"
