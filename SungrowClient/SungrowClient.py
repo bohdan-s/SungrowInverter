@@ -259,11 +259,12 @@ class SungrowClient():
                             register_value = (register_value + u32_value * 0x10000 - 0xffffffff -1)
                         else:
                             register_value = register_value + u32_value * 0x10000
-                    elif register.get('datatype') == "UTF-8": # This seems to be Serial only, 10 bytes
+                    elif register.get('datatype') == "UTF-8":
                         utf_value = register_value.to_bytes(2, 'big')
-                        for x in range(1,5):
+                        for x in range(1, register.get('length', 5)): # the 5 is for downward compatibility with the previous version
                             utf_value += rr.registers[num+x].to_bytes(2, 'big')
-                        register_value = utf_value.decode()
+                        # remove trailing null bytes and convert to string
+                        register_value = utf_value.rstrip(b'\x00').decode('utf-8')
 
 
                     # We convert a system response to a human value 
