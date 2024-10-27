@@ -16,7 +16,7 @@ setuptools.setup(
     url="https://github.com/bohdan-s/SungrowClient",
     packages=setuptools.find_packages(),
     install_requires=[
-        'pymodbus~=2.5.3',
+        'pymodbus>=3.7.4',
         'SungrowModbusTcpClient>=0.1.5',
         'SungrowModbusWebClient>=0.3.2',
     ],

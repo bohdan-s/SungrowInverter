@@ -1,8 +1,3 @@
-#!/usr/bin/python3
-
-from SungrowModbusTcpClient import SungrowModbusTcpClient
-from SungrowModbusWebClient import SungrowModbusWebClient
-from pymodbus.client.sync import ModbusTcpClient
 
 from .version import __version__
 from datetime import datetime
@@ -21,7 +16,6 @@ class SungrowClient():
             "port":     config_inverter.get('port'),
             "timeout":  config_inverter.get('timeout'),
             "retries":  config_inverter.get('retries'),
-            "RetryOnEmpty": False,
         }
         self.inverter_config = {
             "model":            config_inverter.get('model'),
@@ -59,11 +53,14 @@ class SungrowClient():
             return True
 
         if self.inverter_config['connection'] == "http":
+            from SungrowModbusTcpClient import SungrowModbusTcpClient
             self.client_config['port'] = '8082'
             self.client = SungrowModbusWebClient.SungrowModbusWebClient(**self.client_config)
         elif self.inverter_config['connection'] == "sungrow":
+            from SungrowModbusWebClient import SungrowModbusWebClient
             self.client = SungrowModbusTcpClient.SungrowModbusTcpClient(**self.client_config)
         elif self.inverter_config['connection'] == "modbus":
+            from pymodbus.client import ModbusTcpClient
             self.client = ModbusTcpClient(**self.client_config)
         else:
             logging.warning(f"Inverter: Unknown connection type {self.inverter_config['connection']}, Valid options are http, sungrow or modbus")
@@ -200,9 +197,9 @@ class SungrowClient():
         try:
             logging.debug(f'load_registers: {register_type}, {start}:{count}')
             if register_type == "read":
-                rr = self.client.read_input_registers(start,count=count, unit=self.inverter_config['slave'])
+                rr = self.client.read_input_registers(start, count=count, slave=self.inverter_config['slave'])
             elif register_type == "hold":
-                rr = self.client.read_holding_registers(start,count=count, unit=self.inverter_config['slave'])
+                rr = self.client.read_holding_registers(start, count=count, slave=self.inverter_config['slave'])
             else:
                 raise RuntimeError(f"Unsupported register type: {type}")
         except Exception as err:
