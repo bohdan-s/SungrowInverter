@@ -279,7 +279,10 @@ class SungrowClient():
                             register_value = default
 
                     if register.get('accuracy'):
-                        register_value = round(register_value * register.get('accuracy'), 2)
+                        accuracy_value = register.get('accuracy')
+                        if isinstance(accuracy_value, dict):
+                          accuracy_value = accuracy_value.get(self.inverter_config['connection'])
+                        register_value = round(register_value * accuracy_value, 2)
 
                     # Set the final register value with adjustments above included 
                     self.latest_scrape[register_name] = register_value
